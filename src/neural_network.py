@@ -3,7 +3,7 @@ import argparse
 import time
 
 # Classes
-from .neuron import Neuron
+from src.neuron import Neuron
 
 class NeuralNetwork:
     """
@@ -19,6 +19,9 @@ class NeuralNetwork:
         activate:
             Expects value to perform activation on
             Outputs activation
+        softmax:
+            Expects array as input
+            Returns output of softmax function on input array
 
     Attributes:
         inputSize: number of inputs expected
@@ -27,26 +30,42 @@ class NeuralNetwork:
         layerWeights: list of matrices representing weights between layers
         activationFunction: choice between Sigmoid, ReLU, and Tanh
     """
-    def _init_(self, layerSizes, activationFunction='Sigmoid'):
+    def __init__(self, layerSizes, activationFunction='Sigmoid'):
         self.inputSize = layerSizes[0]
 
         self.outputSize = layerSizes[-1]
 
         self.neurons = []
-        for i in range(layerSizes.size - 1):
+        for i in range(len(layerSizes) - 1):
             temp = []
             for j in range(layerSizes[i+1]):
-                temp[j] = Neuron(layerSizes[i])
-            self.neurons[i] = temp
+                temp.append(Neuron(layerSizes[i]))
+            self.neurons.append(temp)
 
         self.layerWeights = []
-        for index in range(layerSizes.size - 1):
-            self.layerWeights[index] = np.random.rand(layerSizes[index], layerSizes[index+1])
+        for index in range(len(layerSizes) - 1):
+            self.layerWeights.append(np.random.rand(layerSizes[index], layerSizes[index+1]))
 
         self.activationFunction = activationFunction
 
     def feed_forward(self, input):
-        assert input.size == self.inputSize
+        assert len(input) == self.inputSize
+        assert range(len(self.layerWeights)) == range(len(self.neurons))
+
+        values = input
+        for weightIndex in range(len(self.layerWeights)):
+            afterMatMul = np.matmul(values, self.layerWeights[weightIndex])
+
+            afterBiasActivation = []
+            assert len(afterMatMul) == len(self.neurons[weightIndex])
+            for neuronIndex in range(len(afterMatMul)):
+                afterBiasActivation.append(self.activate(afterMatMul[neuronIndex] + self.neurons[weightIndex][neuronIndex].bias))
+
+            values = afterBiasActivation
+
+        return self.softmax(values)
+
+
 
     def activate(self, value):
         if(self.activationFunction == 'Sigmoid'):
@@ -57,3 +76,8 @@ class NeuralNetwork:
 
         if(self.activationFunction == 'Tanh'):
             return numpy.tanh(value)
+
+    def softmax(self, input):
+        exp_value = np.exp(input - np.max(input))
+        exp_adjusted = exp_value / np.sum(exp_value)
+        return exp_adjusted
