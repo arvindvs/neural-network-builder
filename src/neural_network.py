@@ -5,6 +5,7 @@ import time
 # Classes
 from src.neuron import Neuron
 
+
 class NeuralNetwork:
     """
     Neural network implementation using Neuron object and network weights
@@ -78,7 +79,7 @@ class NeuralNetwork:
 
     def backpropagation(self, actualOutput, desiredOutput):
         assert len(actualOutput) == len(desiredOutput)
-        
+
 
 
 
@@ -90,7 +91,7 @@ class NeuralNetwork:
             return value*(value > 0)
 
         if(self.activationFunction == 'Tanh'):
-            return numpy.tanh(value)
+            return np.tanh(value)
 
     def softmax(self, input):
         exp_value = np.exp(input - np.max(input))
