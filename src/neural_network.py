@@ -30,7 +30,7 @@ class NeuralNetwork:
         layerWeights: list of matrices representing weights between layers
         activationFunction: choice between Sigmoid, ReLU, and Tanh
     """
-    def __init__(self, layerSizes, activationFunction='Sigmoid'):
+    def __init__(self, layerSizes, activationFunction='Sigmoid', trainingMethod='batchGradientDescent'):
         self.inputSize = layerSizes[0]
 
         self.outputSize = layerSizes[-1]
@@ -48,6 +48,8 @@ class NeuralNetwork:
 
         self.activationFunction = activationFunction
 
+        self.trainMethod = trainingMethod
+
     def feed_forward(self, input):
         assert len(input) == self.inputSize
         assert range(len(self.layerWeights)) == range(len(self.neurons))
@@ -64,6 +66,19 @@ class NeuralNetwork:
             values = afterBiasActivation
 
         return self.softmax(values)
+
+    def train(self, inputs, outputs):
+        assert len(inputs) == len(outputs)
+        dictionary = dict(zip(inputs, outputs))
+
+        for input in dictionary:
+            actualOutput = self.feed_forward(input)
+            desiredOutput = dictionary[input]
+            self.backpropagation(actualOutput, desiredOutput)
+
+    def backpropagation(self, actualOutput, desiredOutput):
+        assert len(actualOutput) == len(desiredOutput)
+        
 
 
 
