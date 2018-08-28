@@ -94,7 +94,7 @@ class NeuralNetwork:
                 weightUpdates = []
                 biasUpdates = []
                 for indexValue in range(len(inputs)):
-                    print("Input ", indexValue, ". Epoch ", iterations)
+                    print("Input ", indexValue, "| Epoch ", iterations)
                     input = inputs[indexValue]
                     actualOutput, weightedInputs = self.feed_forward(input,
                                                                      True)

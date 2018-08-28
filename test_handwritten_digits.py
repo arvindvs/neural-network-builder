@@ -1,11 +1,24 @@
 import numpy as np
 import pickle
+import argparse
+import time
 
 from src.neural_network import NeuralNetwork
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--filename',
+                    default='handwritten_digits_classifier_'+str(time.time()),
+                    type=str, help='Desired Filename')
+parser.add_argument('-r', '--learningrate', default=0.007, type=float,
+                    help='Learning Rate')
+args = parser.parse_args()
+
+filename = args.filename
+learningRate = args.learningrate
+
 layers = [64, 20, 10]
 
-network = NeuralNetwork(layers, 0.007)
+network = NeuralNetwork(layers, learningRate)
 print(network.activationFunctions)
 print(network.trainMethod)
 print(network.inputSize)
@@ -27,7 +40,7 @@ with open('test_files/handwritten_digits/optdigits_train.txt', 'r') as f:
 
 network.train(train_inputs, train_outputs, 600)
 
-pickle.dump(network, open("trained_networks/handwritten_digit_classifier.p", "wb"))
+pickle.dump(network, open("trained_networks/"+filename+".p", "wb"))
 
 test_inputs = []
 test_outputs = []
