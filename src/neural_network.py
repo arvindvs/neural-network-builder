@@ -6,43 +6,44 @@ class NeuralNetwork:
     Neural network implementation using Neuron object and network weights
 
     Functions:
-        _init_:
-            Expects array of layerSizes, type of activation functions
-            Initializes network with random weights
-        feed_forward:
-            Expects array of input values in the shape of self.inputSize
-            Performs forward propagation through network to return output array
-        activate:
-            Expects value to perform activation on
-            Outputs activation
-        softmax:
-            Expects array as input
-            Returns output of softmax function on input array
+        _init_
+        feed_forward
+        train
+        backpropagate
+        activate
+        activate_derivative
+        softmax
 
     Attributes:
         inputSize: number of inputs expected
         outputSize: number of possible classifications
-        # neurons: list of arrays representing layers, each containing Neurons
         layerWeights: list of matrices representing weights between layers
-        biases: list of array representing
-        activationFunction: choice between Sigmoid, ReLU, and Tanh
-        trainMethod:
-        learningRate:
+        biases: list of vectors representing bias before activation
+        activationFunctions: list of activation functions at each layer
+        trainingMethod: string containing gradient descent approach
+        learningRate: float representing learning rate in training
     """
 
     def __init__(self, layerSizes, learningRate, activationFunction='ReLU',
                  trainingMethod='batchGradientDescent'):
+        """Initializes NeuralNetwork object.
 
+        Defines all the pertinent instance variables required to construct and
+        manipulate a NeuralNetwork object.
+
+        Args:
+            layerSizes: A list of ints representing the size of each layer.
+            learningRate: A float that defines the rate of gradient descent.
+            activationFunction: An optional string that defines the activation
+                function used in each hidden layer. Defaults to 'ReLU'.
+            trainingMethod: An optional string defining approach to gradient
+                descent. Defaults to 'batchGradientDescent'.
+
+        Returns:
+            None
+        """
         self.inputSize = layerSizes[0]
         self.outputSize = layerSizes[-1]
-
-        # REPLACE NEURONS #
-        # self.neurons = []
-        # for i in range(len(layerSizes) - 1):
-        #     temp = []
-        #     for j in range(layerSizes[i+1]):
-        #         temp.append(Neuron(layerSizes[i]))
-        #     self.neurons.append(temp)
 
         self.layerWeights = []
         self.biases = []
@@ -57,6 +58,20 @@ class NeuralNetwork:
         self.learningRate = learningRate
 
     def feed_forward(self, input, trainFlag=False):
+        """Sends input through each layer of the network.
+
+        Yields the set of outputs computed by a forward-pass through the neural
+        network. Defines weighted inputs to be used in training if TrainFlag is
+        turned on.
+
+        Args:
+            input: A list of ints representing the size of each layer.
+            trainFlag: An optional boolean that determines if forward-pass is
+                being used for training purposes.
+
+        Returns:
+            A list containing the output values.
+        """
         if trainFlag:
             weightedInputs = []
             weightedInputs.append(input)
@@ -86,7 +101,6 @@ class NeuralNetwork:
     def train(self, inputs, outputs, epochs=500):
         print("Starting training...\n\n")
         assert len(inputs) == len(outputs)
-        # dictionary = dict(zip(inputs, outputs))
 
         if(self.trainMethod == 'batchGradientDescent'):
             for iterations in range(epochs):
