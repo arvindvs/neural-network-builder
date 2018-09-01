@@ -3,7 +3,7 @@ import numpy as np
 
 class NeuralNetwork:
     """
-    Neural network implementation using Neuron object and network weights
+    Neural network implementation
 
     Functions:
         _init_
@@ -99,6 +99,23 @@ class NeuralNetwork:
             return values, weightedInputs
 
     def train(self, inputs, outputs, epochs=500):
+        """Trains network using supervised learning method approach.
+
+        Yields a set of updated weights and biases that have improved accuracy
+        in feed-forward inference.
+
+        Args:
+            inputs: A list of arrays representing each input data point. Input
+                must be the same size as the first layer.
+            outputs: A list of arrays representing each output data point.
+                Each output array must have the same size as the number of
+                classes.
+            epochs: Optional integer that determines number of gradient descent
+                iterations.
+
+        Returns:
+            None
+        """
         print("Starting training...\n\n")
         assert len(inputs) == len(outputs)
 
@@ -160,7 +177,29 @@ class NeuralNetwork:
         print("\nCompleted training...\n")
 
     def backpropagate(self, actualOutput, desiredOutput, weightedInputs):
+        """Performs a single iteration of backpropagation by calculating the
+        error in each layer.
+
+        Yields the set of errors in each layer based on an experimental output
+        and desired output. These errors are then used to modify the weights
+        and biases of the network according to the desired gradient descent
+        method.
+
+        Args:
+            actualOutput: An array containing the values from a forward pass
+            desiredOutput: An array containing the expected/desired values
+                based on the corresponding input values
+            weightedInputs: A list of arrays representing the value at each
+                layer calculated during forward propagation before activation.
+                Passed as a parameter for the sake of convenience so the values
+                don't have to be calculated multiple times.
+
+        Returns:
+            A list of arrays representing the error in each layer
+        """
         errorValues = []
+
+        # Softmax output uses Cross-Entropy Loss while others use Square Error
         if(self.activationFunctions[-1] == 'Softmax'):
             err = np.subtract(actualOutput, desiredOutput)
         else:
@@ -182,6 +221,21 @@ class NeuralNetwork:
         return errorValues
 
     def activate(self, value, activationFunction):
+        """Modifies a value using the given activation function
+
+        Activates the value, provided as either an array or single input, using
+        the user-inputted activation function.
+        This activate function is called in feed_forward and backpropagate.
+
+        Args:
+            value: Either an array or single float value representing value
+                to be activated.
+            activationFunction: A string representing the user-inputted
+                function to be used on the given value.
+
+        Returns:
+            Activated value
+        """
         if isinstance(value, (list,)) or isinstance(value, (np.ndarray,)):
             newArray = []
             if(activationFunction == 'Sigmoid'):
@@ -205,6 +259,17 @@ class NeuralNetwork:
                 return np.tanh(value)
 
     def activate_derivative(self, array, activationFunction):
+        """Derivative of the activation function
+
+        Used in the backpropagate function to calculate error at each layer.
+
+        Args:
+            value: An array representing the values to be activated.
+            activationFunction: A string representing the user-inputted
+                function whose derivative is to be used on the given value.
+        Returns:
+            Derivative of activated value
+        """
         newArray = []
         if(activationFunction == 'Sigmoid'):
             for elem in array:
@@ -221,6 +286,20 @@ class NeuralNetwork:
         return newArray
 
     def softmax(self, array):
+        """Performs softmax on each value of a given array.
+
+        A normalizing function that makes each value in array add to 1. Useful
+        in classification for determining probability of each class. Used in
+        the activate function when called on an array. Normally called on the
+        last layer of the network.
+
+        Args:
+            array: An array to be used in the softmax function. Normally
+                represents the output layer of a network.
+
+        Returns:
+            Softmax of array
+        """
         exp_value = np.exp(array - np.max(array))
         exp_adjusted = exp_value / np.sum(exp_value)
         return exp_adjusted
