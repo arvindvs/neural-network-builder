@@ -1,9 +1,16 @@
-# neural-network-builder
+### Neural Network Builder
+Build and train a standard fully-connected neural network.
+Choose the size of input, number of layers, type of activation function, and number of output classes in your network
+Train your network by providing data inputs and inputs with a specific learning rate.
+Use your fully trained network to perform classification or regression!
+## Getting Started
 
-Build a standard classifying feed-forward neural network.
+# Prerequisites
 
-Choose the size of input, number of layers, type of activation function, and number of output classes in your network.
+## Usage
 
-Train your network by providing the data inputs and outputs and learning rate (uses batch gradient descent).
+# Creating architecture
 
-Use your fully trained network to perform classification!
+# Training
+
+# Saving and Reading NN object
